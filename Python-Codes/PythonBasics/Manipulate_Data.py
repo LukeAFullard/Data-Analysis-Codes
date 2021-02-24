@@ -4,8 +4,15 @@ import pandas as pd
 
 
 ## read csv file 
-df_Data =pd.read_csv("pokemon_data.csv")
+import io
+import requests
+url="https://raw.githubusercontent.com/LukeAFullard/Data-Analysis-Codes/main/Python-Codes/PythonBasics/pokemon_data.csv"
+s=requests.get(url).content
+df_Data =pd.read_csv(io.StringIO(s.decode('utf-8')))
 
+
+#Data frame info
+print(df_Data.info() )
 
 #print first N rows
 print(df_Data.head(7))
@@ -50,7 +57,7 @@ print(df_Data.loc[~df_Data["Name"].str.contains("Mega")])
 
 
 
-## regural expressions (Here string contains A or B)
+## regular expressions (Here string contains A or B)
 import re
 print(df_Data.loc[df_Data["Type 1"].str.contains("Fire|Grass", regex=True)])
 # (Here all Pokemon starting with "Pi")
@@ -79,6 +86,11 @@ print(df_Data.groupby(["Type 1","Type 2"]).count()['count'])
 ## sort data frame first by Name (ascending) then by Speed (descending)
 df_sorted_Data = df_Data.sort_values(["Name", "Speed"], ascending=[1,0])
 print(df_sorted_Data.head(10))
+
+
+
+
+
 
 
 
@@ -121,8 +133,72 @@ print(df_merged.head(5))
 
 
 
+## Selecting a series index and values
+ser = df_Data["Name"]
+print(ser.index)
+print(ser.values[0:5])
+# Length of a series
+print(len(ser))
+print(ser.size)
+#shape of series/data frame
+print(ser.shape)
+print(df_Data.shape)
+
+##Find unique and nonunique values of a series
+print(ser.unique())
+print(ser.nunique())
+
+## print nlargest/smallest
+ser2 = df_Data["HP"]
+print(ser2.nlargest(4))
+print(ser2.nsmallest(4))
+
+##Number of occurances of a value in a series
+print(ser2.value_counts())
+
+#count number of missing values in a series
+print(ser2.isna().sum())
 
 
 
+## Applying functions
+f = lambda x: x*1.5
+print(ser2.apply(f))
 
 
+
+## dropping when missing data
+
+# Drop all rows that contain null values
+drop_null_row = df_Data.dropna() 
+# Drop all columns that contain null values
+drop_null_col = df_Data.dropna(axis=1)
+# Replace all null values with 0
+replace_null = df_Data.fillna(0) 
+# Replace all null values with the mean (mean can be replaced with almost any function from the statistics module)
+df_Data = round(df_Data.fillna(df_Data.mean()),2)
+# Replace all values equal to 1 with 'one'
+one = df_Data.replace(100,'A') 
+
+
+
+## Creating pivot tables in Python
+pivot_table = df_Data.pivot_table(index='Type 1',
+                             values=['Attack','Defense'],
+                             aggfunc=[len, np.mean, np.std])
+print(pivot_table)
+
+
+
+## Dealing with duplicate rows
+df_Data = df_Data.drop_duplicates(subset='Name', keep=first)
+#subset 
+#Only consider certain columns for identifying duplicates, by default use all of the columns.
+
+#keep{‘first’, ‘last’, False}, default ‘first’
+#Determines which duplicates (if any) to keep. - first : Drop duplicates except for the first occurrence. - last : Drop duplicates except for the last occurrence. - False : Drop all duplicates.
+
+
+
+## Transpose a data frame
+df_Data = df_Data.transpose(as_index = False)
