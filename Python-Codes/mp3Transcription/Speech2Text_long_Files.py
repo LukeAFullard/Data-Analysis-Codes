@@ -71,7 +71,7 @@ for i in range(number_of_iterations):
                 print('Sorry, translate failed, moving on...')
                 Err_time = []
                 Err_time = i*20
-                FullText.append(r'ERROR HERE: problem translating from {Err_time} seconds')
+                FullText.append(f'ERROR HERE: problem translating from {Err_time} seconds')
     
 print("Writing file...")     
 write_file = open(src[0:-4] + '_Audio_Transcribed.txt', "w")
