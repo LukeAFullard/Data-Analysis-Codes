@@ -8,6 +8,7 @@ import json
 import tkinter as tk
 from tkinter.filedialog import askopenfilename
 import math
+import time
 
 
 # Initialize recognizer class (for recognizing the speech)
@@ -44,12 +45,33 @@ for i in range(number_of_iterations):
             # using google speech recognition
             text = r.recognize_google(audio_text)
             FullText.append(text)
+            # Wait for 5 seconds
+            time.sleep(5)
             #text = r.recognize_google(audio_text, language = "en-NZ")
             print('Converting audio transcripts into text ...')
             print(text)
      
         except:
-            print('Sorry.. run again...')
+            print('Sorry, translate failed, trying again...')
+            # Wait for 5 seconds
+            time.sleep(5)
+            #NOTE The below is lazy programming, I should make functions out of these not just copy paste. But for now this is a lazy and quick hack so I can go do another task...
+            try:
+        
+                # using google speech recognition
+                text = r.recognize_google(audio_text)
+                FullText.append(text)
+                # Wait for 5 seconds
+                time.sleep(5)
+                #text = r.recognize_google(audio_text, language = "en-NZ")
+                print('Converting audio transcripts into text ...')
+                print(text)
+     
+            except:
+                print('Sorry, translate failed, moving on...')
+                Err_time = []
+                Err_time = i*20
+                FullText.append(r'ERROR HERE: problem translating from {Err_time} seconds')
     
 print("Writing file...")     
 write_file = open(src[0:-4] + '_Audio_Transcribed.txt', "w")
